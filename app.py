@@ -58,22 +58,18 @@ if uploaded_file:
         transform=fig.transFigure, color='grey'
     )
 
-    # Plot "Retweets over time" without axis lines, ticks, or labels
+    # Plot "Retweets over time" without numeric tick labels
     ax1 = fig.add_subplot(221)
     ax1.plot(df['Date'], df['No. RT'], color='black', linewidth=2)
     ax1.set_title("Retweets over time", fontsize=14, weight='bold')
     ax1.set_ylim(0, max(df['No. RT']) * 1.2)
     ax1.set_ylabel("Retweets")
 
-    # Remove all axis spines, ticks, and labels
-    ax1.spines['top'].set_visible(False)
-    ax1.spines['right'].set_visible(False)
-    ax1.spines['left'].set_visible(False)
-    ax1.spines['bottom'].set_visible(False)
-    ax1.xaxis.set_ticks([])
-    ax1.yaxis.set_ticks([])
+    # Remove numeric tick labels on both x and y axes
+    ax1.set_xticklabels([])
+    ax1.set_yticklabels([])
 
-    # Plot "Engagement rate over time" as a stacked bar chart without axis lines, ticks, or labels
+    # Plot "Engagement rate over time" as a stacked bar chart without numeric tick labels
     ax2 = fig.add_subplot(223)
     ax2.bar(df['Date'], df['No. Comments'], label='Comments', color='skyblue')
     ax2.bar(df['Date'], df['No. Likes'], bottom=df['No. Comments'], label='Likes', color='blue')
@@ -82,13 +78,9 @@ if uploaded_file:
     ax2.set_ylabel("Engagement")
     ax2.legend(loc='upper right')
 
-    # Remove all axis spines, ticks, and labels
-    ax2.spines['top'].set_visible(False)
-    ax2.spines['right'].set_visible(False)
-    ax2.spines['left'].set_visible(False)
-    ax2.spines['bottom'].set_visible(False)
-    ax2.xaxis.set_ticks([])
-    ax2.yaxis.set_ticks([])
+    # Remove numeric tick labels on both x and y axes
+    ax2.set_xticklabels([])
+    ax2.set_yticklabels([])
 
     # Add metric icons with colored rectangles and text
     for label, pos in metrics_positions.items():
