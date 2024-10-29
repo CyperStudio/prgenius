@@ -9,14 +9,10 @@ st.title("Twitter Analytics Report")
 uploaded_file = st.file_uploader("Upload an Excel file", type="xlsx")
 
 if uploaded_file:
-    # Load workbook to check available sheets
     xls = pd.ExcelFile(uploaded_file)
-    
-    # Dropdown to select the sheet name
     sheet_name = st.selectbox("Select the sheet", xls.sheet_names)
-
-    # Load data from the selected sheet
     df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
+    st.write(df.head())
 
     # Convert the 'Date' column to datetime format
     df['Date'] = pd.to_datetime(df['Date'])
@@ -52,28 +48,16 @@ if uploaded_file:
     fig = plt.figure(figsize=(14, 10))
     fig.suptitle("Twitter Analytics Report", fontsize=20, weight='bold')
 
-    # Add sheet name as a subtitle heading with padding below the main title
-    plt.text(
-        0.5, 0.90, sheet_name, ha='center', fontsize=16, weight='bold', 
-        transform=fig.transFigure, color='grey'
-    )
-
-    # Plot "Retweets over time" without numeric tick labels or axis lines
+    # Plot "Retweets over time"
     ax1 = fig.add_subplot(221)
     ax1.plot(df['Date'], df['No. RT'], color='black', linewidth=2)
     ax1.set_title("Retweets over time", fontsize=14, weight='bold')
     ax1.set_ylim(0, max(df['No. RT']) * 1.2)
     ax1.set_ylabel("Retweets")
+    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d'))
+    ax1.grid(axis='y', linestyle='--', alpha=0.7)
 
-    # Remove x and y axis lines (spines) and tick labels
-    ax1.spines['top'].set_visible(False)
-    ax1.spines['right'].set_visible(False)
-    ax1.spines['left'].set_visible(False)
-    ax1.spines['bottom'].set_visible(False)
-    ax1.xaxis.set_ticks([])
-    ax1.yaxis.set_ticks([])
-
-    # Plot "Engagement rate over time" as a stacked bar chart without numeric tick labels or axis lines
+    # Plot "Engagement rate over time" as a stacked bar chart for Comments, Likes, and Retweets
     ax2 = fig.add_subplot(223)
     ax2.bar(df['Date'], df['No. Comments'], label='Comments', color='skyblue')
     ax2.bar(df['Date'], df['No. Likes'], bottom=df['No. Comments'], label='Likes', color='blue')
@@ -81,14 +65,8 @@ if uploaded_file:
     ax2.set_title("Engagement rate over time", fontsize=14, weight='bold')
     ax2.set_ylabel("Engagement")
     ax2.legend(loc='upper right')
-
-    # Remove x and y axis lines (spines) and tick labels
-    ax2.spines['top'].set_visible(False)
-    ax2.spines['right'].set_visible(False)
-    ax2.spines['left'].set_visible(False)
-    ax2.spines['bottom'].set_visible(False)
-    ax2.xaxis.set_ticks([])
-    ax2.yaxis.set_ticks([])
+    ax2.xaxis.set_major_formatter(mdates.DateFormatter('%d'))
+    ax2.grid(axis='y', linestyle='--', alpha=0.7)
 
     # Add metric icons with colored rectangles and text
     for label, pos in metrics_positions.items():
