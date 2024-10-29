@@ -1,95 +1,85 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
-import matplotlib.patches as patches
 import streamlit as st
 
-# Streamlit file uploader
+# Streamlit Layout
 st.title("Twitter Analytics Report")
-uploaded_file = st.file_uploader("Upload an Excel file", type="xlsx")
 
-if uploaded_file:
-    # Load workbook to check available sheets
-    xls = pd.ExcelFile(uploaded_file)
-    
-    # Dropdown to select the sheet name
-    sheet_name = st.selectbox("Select the sheet", xls.sheet_names)
+# Side panel information
+col1, col2 = st.columns([1, 3])
 
-    # Load data from the selected sheet
-    df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
+# Left side with additional details
+with col1:
+    st.image("https://upload.wikimedia.org/wikipedia/en/6/60/Twitter_Logo_as_of_2021.svg", width=50)  # Twitter logo
+    st.markdown("### Date period:\n Last 30 days", unsafe_allow_html=True)
+    st.markdown("### Compared:\n Previous period", unsafe_allow_html=True)
 
-    # Convert the 'Date' column to datetime format
-    df['Date'] = pd.to_datetime(df['Date'])
+# Main report title and subtitle on the right
+with col2:
+    st.subheader("Retweets over time")
 
-    # Define metrics and calculations
-    metrics = {
-        "Retweets": int(df['No. RT'].sum()),
-        "Favorites": int(df['No. Likes'].sum()),
-        "Impressions": int(df['No. Impressions p/Tweet'].sum()),
-        "Followers": int(df['No. Followers'].max()),
-        "Comments": int(df['No. Comments'].sum())
-    }
+# Generate example data if needed
+# df = pd.read_excel(uploaded_file, sheet_name=sheet_name) # Uncomment this to use actual data
+dates = pd.date_range(start="2023-10-01", end="2023-10-30")
+data = {
+    'Date': dates,
+    'Retweets': [50 + i*2 for i in range(len(dates))],
+    'Likes': [60 + i*3 for i in range(len(dates))],
+    'Comments': [20 + i for i in range(len(dates))],
+}
+df = pd.DataFrame(data)
 
-    # Define icon colors for each metric
-    icon_colors = {
-        "Retweets": "cornflowerblue",
-        "Favorites": "salmon",
-        "Impressions": "seagreen",
-        "Followers": "orange",
-        "Comments": "purple"
-    }
+# Plot 1: Retweets over time
+fig1, ax1 = plt.subplots(figsize=(6, 3))
+ax1.plot(df['Date'], df['Retweets'], color='black', linewidth=2)
+ax1.fill_between(df['Date'], df['Retweets'], color='lightgrey', alpha=0.3)
+ax1.set_title("Retweets over time", fontsize=14, weight='bold')
+ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d'))
+ax1.grid(axis='y', linestyle='--', alpha=0.5)
+ax1.set_yticks([])  # Remove y-axis ticks for simplicity
+ax1.set_xticks(df['Date'][::4])  # Set fewer x-ticks for readability
 
-    # Define icon positions on the plot
-    metrics_positions = {
-        "Retweets": (0.65, 0.6),
-        "Favorites": (0.65, 0.4),
-        "Impressions": (0.85, 0.6),
-        "Followers": (0.85, 0.4),
-        "Comments": (0.75, 0.2)
-    }
+# Display the chart in Streamlit
+st.pyplot(fig1)
 
-    # Plotting
-    fig = plt.figure(figsize=(14, 10))
-    fig.suptitle("Twitter Analytics Report", fontsize=20, weight='bold')
+# Plot 2: Engagement rate over time as a stacked bar chart
+fig2, ax2 = plt.subplots(figsize=(6, 3))
+ax2.bar(df['Date'], df['Comments'], label='Comments', color='skyblue')
+ax2.bar(df['Date'], df['Likes'], bottom=df['Comments'], label='Likes', color='blue')
+ax2.bar(df['Date'], df['Retweets'], bottom=df['Comments'] + df['Likes'], label='Retweets', color='navy')
+ax2.set_title("Engagement rate over time", fontsize=14, weight='bold')
+ax2.set_yticks([])  # Remove y-axis ticks for simplicity
+ax2.set_xticks(df['Date'][::4])  # Set fewer x-ticks for readability
+ax2.grid(axis='y', linestyle='--', alpha=0.5)
+ax2.legend(loc='upper right')
 
-    # Add sheet name as a subtitle heading with padding below the main title
-    plt.text(
-        0.5, 0.90, sheet_name, ha='center', fontsize=16, weight='bold', 
-        transform=fig.transFigure, color='grey'
-    )
+# Display the chart in Streamlit
+st.pyplot(fig2)
 
-    # Plot "Retweets over time" without numeric tick labels
-    ax1 = fig.add_subplot(221)
-    ax1.plot(df['Date'], df['No. RT'], color='black', linewidth=2)
-    ax1.set_title("Retweets over time", fontsize=14, weight='bold')
-    ax1.set_ylim(0, max(df['No. RT']) * 1.2)
-    ax1.set_ylabel("Retweets")
+# Metric cards with icons
+col3, col4, col5, col6 = st.columns(4)
 
-    # Remove numeric tick labels on both x and y axes
-    ax1.set_xticklabels([])
-    ax1.set_yticklabels([])
+# Retweets Metric Card
+with col3:
+    st.markdown("#### Retweets")
+    st.markdown("5,753")  # Example metric value
+    st.markdown("+4.49%", unsafe_allow_html=True)
 
-    # Plot "Engagement rate over time" as a stacked bar chart without numeric tick labels
-    ax2 = fig.add_subplot(223)
-    ax2.bar(df['Date'], df['No. Comments'], label='Comments', color='skyblue')
-    ax2.bar(df['Date'], df['No. Likes'], bottom=df['No. Comments'], label='Likes', color='blue')
-    ax2.bar(df['Date'], df['No. RT'], bottom=df['No. Comments'] + df['No. Likes'], label='Retweets', color='navy')
-    ax2.set_title("Engagement rate over time", fontsize=14, weight='bold')
-    ax2.set_ylabel("Engagement")
-    ax2.legend(loc='upper right')
+# Favorites Metric Card
+with col4:
+    st.markdown("#### Favorites")
+    st.markdown("11,783")  # Example metric value
+    st.markdown("+8.90%", unsafe_allow_html=True)
 
-    # Remove numeric tick labels on both x and y axes
-    ax2.set_xticklabels([])
-    ax2.set_yticklabels([])
+# Engagement Rate Metric Card
+with col5:
+    st.markdown("#### Engagement rate")
+    st.markdown("38.6%")  # Example metric value
+    st.markdown("+1.98%", unsafe_allow_html=True)
 
-    # Add metric icons with colored rectangles and text
-    for label, pos in metrics_positions.items():
-        color = icon_colors[label]
-        # Draw rectangle as an icon
-        rect = patches.Rectangle((pos[0]-0.025, pos[1]-0.05), 0.05, 0.05, color=color, transform=fig.transFigure, clip_on=False)
-        fig.patches.append(rect)
-        # Add text for each metric
-        fig.text(pos[0], pos[1], f"{label}\n{metrics[label]:,}", ha='center', fontsize=12, weight='bold', color=color)
-
-    # Display plot in Streamlit
-    st.pyplot(fig)
+# Impressions Metric Card
+with col6:
+    st.markdown("#### Impressions")
+    st.markdown("20,683")  # Example metric value
+    st.markdown("+7.98%", unsafe_allow_html=True)
