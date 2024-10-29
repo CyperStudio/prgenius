@@ -44,9 +44,10 @@ if uploaded_file:
         "Comments": (0.75, 0.2)
     }
 
-    # Plotting
-    fig = plt.figure(figsize=(14, 10))
-    fig.suptitle("Twitter Analytics Report", fontsize=20, weight='bold')
+  # Plotting
+fig = plt.figure(figsize=(14, 10))
+fig.suptitle(f"Twitter Analytics Report\nSheet: {sheet_name}", fontsize=20, weight='bold')
+
 
     # Plot "Retweets over time"
     ax1 = fig.add_subplot(221)
