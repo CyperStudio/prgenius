@@ -9,11 +9,18 @@ st.title("Twitter Analytics Report")
 uploaded_file = st.file_uploader("Upload an Excel file", type="xlsx")
 
 if uploaded_file:
+    # Load workbook to check available sheets
     xls = pd.ExcelFile(uploaded_file)
-    sheet_name = st.selectbox("Select the sheet", xls.sheet_names)
-    df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
-    st.write(df.head())
     
+    # Dropdown to select the sheet name
+    sheet_name = st.selectbox("Select the sheet", xls.sheet_names)
+
+    # Display the selected sheet name below the main title
+    st.subheader(f"Sheet: {sheet_name}")
+
+    # Load data from the selected sheet
+    df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
+
     # Convert the 'Date' column to datetime format
     df['Date'] = pd.to_datetime(df['Date'])
 
