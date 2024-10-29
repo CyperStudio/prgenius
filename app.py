@@ -15,9 +15,6 @@ if uploaded_file:
     # Dropdown to select the sheet name
     sheet_name = st.selectbox("Select the sheet", xls.sheet_names)
 
-    # Display the selected sheet name below the main title
-    st.subheader(f"Sheet: {sheet_name}")
-
     # Load data from the selected sheet
     df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
 
@@ -54,6 +51,9 @@ if uploaded_file:
     # Plotting
     fig = plt.figure(figsize=(14, 10))
     fig.suptitle("Twitter Analytics Report", fontsize=20, weight='bold')
+
+    # Add the sheet name below the title within the chart
+    plt.text(0.5, 0.94, f"Sheet: {sheet_name}", ha='center', fontsize=14, transform=fig.transFigure, color='grey')
 
     # Plot "Retweets over time"
     ax1 = fig.add_subplot(221)
