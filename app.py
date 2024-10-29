@@ -9,10 +9,11 @@ st.title("Twitter Analytics Report")
 uploaded_file = st.file_uploader("Upload an Excel file", type="xlsx")
 
 if uploaded_file:
-    # Load data
-    sheet_name = 'Nudge Reporting'  # Adjust if needed
+    xls = pd.ExcelFile(uploaded_file)
+    sheet_name = st.selectbox("Select the sheet", xls.sheet_names)
     df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
-
+    st.write(df.head())
+    
     # Convert the 'Date' column to datetime format
     df['Date'] = pd.to_datetime(df['Date'])
 
