@@ -52,19 +52,28 @@ if uploaded_file:
     fig = plt.figure(figsize=(14, 10))
     fig.suptitle("Twitter Analytics Report", fontsize=20, weight='bold')
 
-    # Add the sheet name below the title within the chart
-    plt.text(0.5, 0.94, f"Sheet: {sheet_name}", ha='center', fontsize=14, transform=fig.transFigure, color='grey')
+    # Add sheet name as a subtitle heading with padding below the main title
+    plt.text(
+        0.5, 0.90, sheet_name, ha='center', fontsize=16, weight='bold', 
+        transform=fig.transFigure, color='grey'
+    )
 
-    # Plot "Retweets over time"
+    # Plot "Retweets over time" without axis lines, ticks, or labels
     ax1 = fig.add_subplot(221)
     ax1.plot(df['Date'], df['No. RT'], color='black', linewidth=2)
     ax1.set_title("Retweets over time", fontsize=14, weight='bold')
     ax1.set_ylim(0, max(df['No. RT']) * 1.2)
     ax1.set_ylabel("Retweets")
-    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d'))
-    ax1.grid(axis='y', linestyle='--', alpha=0.7)
 
-    # Plot "Engagement rate over time" as a stacked bar chart for Comments, Likes, and Retweets
+    # Remove all axis spines, ticks, and labels
+    ax1.spines['top'].set_visible(False)
+    ax1.spines['right'].set_visible(False)
+    ax1.spines['left'].set_visible(False)
+    ax1.spines['bottom'].set_visible(False)
+    ax1.xaxis.set_ticks([])
+    ax1.yaxis.set_ticks([])
+
+    # Plot "Engagement rate over time" as a stacked bar chart without axis lines, ticks, or labels
     ax2 = fig.add_subplot(223)
     ax2.bar(df['Date'], df['No. Comments'], label='Comments', color='skyblue')
     ax2.bar(df['Date'], df['No. Likes'], bottom=df['No. Comments'], label='Likes', color='blue')
@@ -72,8 +81,14 @@ if uploaded_file:
     ax2.set_title("Engagement rate over time", fontsize=14, weight='bold')
     ax2.set_ylabel("Engagement")
     ax2.legend(loc='upper right')
-    ax2.xaxis.set_major_formatter(mdates.DateFormatter('%d'))
-    ax2.grid(axis='y', linestyle='--', alpha=0.7)
+
+    # Remove all axis spines, ticks, and labels
+    ax2.spines['top'].set_visible(False)
+    ax2.spines['right'].set_visible(False)
+    ax2.spines['left'].set_visible(False)
+    ax2.spines['bottom'].set_visible(False)
+    ax2.xaxis.set_ticks([])
+    ax2.yaxis.set_ticks([])
 
     # Add metric icons with colored rectangles and text
     for label, pos in metrics_positions.items():
