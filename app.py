@@ -52,8 +52,11 @@ if uploaded_file:
     fig = plt.figure(figsize=(14, 10))
     fig.suptitle("Twitter Analytics Report", fontsize=20, weight='bold')
 
-    # Add the sheet name below the title within the chart
-    plt.text(0.5, 0.94, f"Sheet: {sheet_name}", ha='center', fontsize=14, transform=fig.transFigure, color='grey')
+    # Add sheet name as a subtitle heading with padding below the main title
+    plt.text(
+        0.5, 0.90, sheet_name, ha='center', fontsize=16, weight='bold', 
+        transform=fig.transFigure, color='grey'
+    )
 
     # Plot "Retweets over time"
     ax1 = fig.add_subplot(221)
