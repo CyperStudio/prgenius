@@ -44,12 +44,9 @@ if uploaded_file:
         "Comments": (0.75, 0.2)
     }
 
-# Plotting
-fig = plt.figure(figsize=(14, 10))
-fig.suptitle(f"Twitter Analytics Report\nSheet: {sheet_name}", fontsize=20, weight='bold')
-
-# The rest of the code follows...
-
+    # Plotting
+    fig = plt.figure(figsize=(14, 10))
+    fig.suptitle(f"Twitter Analytics Report\n {sheet_name}", fontsize=20, weight='bold')
 
     # Plot "Retweets over time"
     ax1 = fig.add_subplot(221)
@@ -75,7 +72,7 @@ fig.suptitle(f"Twitter Analytics Report\nSheet: {sheet_name}", fontsize=20, weig
     for label, pos in metrics_positions.items():
         color = icon_colors[label]
         # Draw rectangle as an icon
-        rect = patches.Rectangle((pos[0]-0.025, pos[1]-0.05), 0.05, 0.05, color=color, transform=fig.transFigure, clip_on=False)
+        rect = patches.Rectangle((pos[0] - 0.025, pos[1] - 0.05), 0.05, 0.05, color=color, transform=fig.transFigure, clip_on=False)
         fig.patches.append(rect)
         # Add text for each metric
         fig.text(pos[0], pos[1], f"{label}\n{metrics[label]:,}", ha='center', fontsize=12, weight='bold', color=color)
